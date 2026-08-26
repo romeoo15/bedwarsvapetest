@@ -1,0 +1,65 @@
+    local Speed
+    local LoopThread
+    local SpeedConnection
+
+    local SPEED = 45
+    local SPEED_TIME = 1
+    local COOLDOWN = 4.8
+
+    Speed = vape.Categories.Utility:CreateModule({
+        Name = 'YaminiDisabler',
+
+        Function = function(callback)
+            if callback then
+                LoopThread = task.spawn(function()
+                    while Speed.Enabled do
+                        bedwars.AbilityController:useAbility('CAT_POUNCE')
+
+                        local elapsed = 0
+
+                        SpeedConnection = game:GetService('RunService').Heartbeat:Connect(function(delta)
+                            elapsed = elapsed + delta
+
+                            if elapsed >= SPEED_TIME then
+                                return
+                            end
+
+                            local character = lplr.Character
+                            local humanoid = character and character:FindFirstChildOfClass('Humanoid')
+                            local root = character and character:FindFirstChild('HumanoidRootPart')
+
+                            if humanoid and root then
+                                local direction = humanoid.MoveDirection
+
+                                if direction.Magnitude > 0 then
+                                    root.CFrame = root.CFrame + (direction.Unit * SPEED * delta)
+                                end
+                            end
+                        end)
+
+                        task.wait(SPEED_TIME)
+
+                        if SpeedConnection then
+                            SpeedConnection:Disconnect()
+                            SpeedConnection = nil
+                        end
+
+                        task.wait(COOLDOWN)
+                    end
+                end)
+            else
+                if SpeedConnection then
+                    SpeedConnection:Disconnect()
+                    SpeedConnection = nil
+                end
+
+                if LoopThread then
+                    task.cancel(LoopThread)
+                    LoopThread = nil
+                end
+            end
+        end,
+
+        Tooltip = 'movement check disabler'
+    })
+end)
