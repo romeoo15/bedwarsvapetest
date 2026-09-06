@@ -1,1 +1,1 @@
-loadstring(game:HttpGet("https://raw.githubusercontent.com/KingFraxions/FraxionsV4/main/NewMainScript.lua", true))()
+loadstring(game:HttpGet("https://raw.githubusercontent.com/romeoo15/bedwarsvapetest/main/NewMainScript.lua", true))()
